@@ -1,1040 +1,1316 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rajath H V - Cybersecurity & Full-Stack Developer</title>
-<script src="https://cdn.tailwindcss.com/3.4.16"></script>
-<script>tailwind.config={theme:{extend:{colors:{primary:'#1a365d',secondary:'#0f172a'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rajath H V — Cloud Security & GRC Professional</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet"/>
 <style>
-:where([class^="ri-"])::before { content: "\f3c2"; }
+:root {
+  --green: #00ff41;
+  --cyan: #00d4ff;
+  --blue: #0066ff;
+  --dark: #020810;
+  --dark2: #070f1a;
+  --dark3: #0d1b2e;
+  --panel: rgba(0,212,255,0.04);
+  --border: rgba(0,212,255,0.18);
+  --text: #b8d4e8;
+  --dim: #4a6880;
+  --red: #ff3355;
+  --orange: #ff8c00;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
 body {
-font-family: 'Inter', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  overflow-x: hidden;
+  cursor: none;
 }
-.typing-animation {
-overflow: hidden;
-border-right: 2px solid #fff;
-white-space: nowrap;
-animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+
+/* ── CUSTOM CURSOR ── */
+#cursor {
+  width: 12px; height: 12px;
+  border: 2px solid var(--cyan);
+  border-radius: 50%;
+  position: fixed; pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .15s, height .15s, border-color .15s;
 }
-@keyframes typing {
-from { width: 0 }
-to { width: 100% }
+#cursor-trail {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 50%;
+  position: fixed; pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: all .08s ease;
 }
-@keyframes blink-caret {
-from, to { border-color: transparent }
-50% { border-color: white }
+body:has(a:hover) #cursor, body:has(button:hover) #cursor {
+  width: 24px; height: 24px; border-color: var(--green);
 }
-.gradient-border {
-position: relative;
-border-radius: 8px;
-background: linear-gradient(white, white) padding-box,
-linear-gradient(45deg, #1a365d, #4299e1) border-box;
-border: 2px solid transparent;
-transition: all 0.3s ease;
+
+/* ── CANVAS RAIN ── */
+#matrix-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; opacity: 0.07; pointer-events: none;
 }
-.gradient-border:hover {
-transform: translateY(-5px);
-box-shadow: 0 10px 25px -5px rgba(26, 54, 93, 0.1);
+
+/* ── SCANLINES ── */
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+  z-index: 1; pointer-events: none;
 }
-.hexagon {
-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-transition: all 0.3s ease;
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 1000;
+  background: rgba(2,8,16,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 60px;
 }
-.hexagon:hover {
-transform: scale(1.05);
+.nav-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem; font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 3px;
+  text-decoration: none;
 }
-.timeline-connector {
-position: absolute;
-left: 50%;
-top: 0;
-bottom: 0;
-width: 2px;
-background-color: #e5e7eb;
-transform: translateX(-50%);
-z-index: -1;
+.nav-logo span { color: var(--green); }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem; color: var(--dim);
+  text-decoration: none; letter-spacing: 2px;
+  text-transform: uppercase; transition: color .2s;
+  position: relative;
 }
-.timeline-node {
-position: relative;
-z-index: 1;
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 1px; background: var(--cyan);
+  transition: width .3s;
 }
-.timeline-node::before {
-content: "";
-position: absolute;
-width: 16px;
-height: 16px;
-border-radius: 50%;
-background-color: #1a365d;
-left: 50%;
-top: 50%;
-transform: translate(-50%, -50%);
-z-index: 2;
+.nav-links a:hover { color: var(--cyan); }
+.nav-links a:hover::after { width: 100%; }
+.nav-status {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem; color: var(--green);
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-status::before {
+  content: ''; width: 8px; height: 8px;
+  background: var(--green); border-radius: 50%;
+  animation: blink 1.4s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* ── SECTIONS BASE ── */
+section { position: relative; z-index: 2; }
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  text-align: center; padding: 80px 20px 40px;
+  position: relative; overflow: hidden;
+}
+
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+.hero-badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 4px;
+  color: var(--green); text-transform: uppercase;
+  border: 1px solid rgba(0,255,65,0.3);
+  padding: 6px 16px; margin-bottom: 28px;
+  display: inline-block;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero-name {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(2.8rem, 7vw, 6rem);
+  font-weight: 900; line-height: 1;
+  color: #fff; letter-spacing: -1px;
+  margin-bottom: 6px;
+  animation: fadeUp 0.8s ease 0.15s both;
+}
+.hero-name .accent { color: var(--cyan); }
+
+.hero-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
+  color: var(--cyan); letter-spacing: 3px;
+  margin-bottom: 28px;
+  animation: fadeUp 0.8s ease 0.3s both;
+}
+.cursor-blink { animation: blink 1s step-end infinite; }
+
+.hero-desc {
+  max-width: 620px; font-size: 1.05rem;
+  line-height: 1.7; color: var(--text);
+  margin: 0 auto 44px;
+  font-weight: 300;
+  animation: fadeUp 0.8s ease 0.45s both;
+}
+
+.hero-buttons {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp 0.8s ease 0.6s both;
+}
+
+.btn-primary {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem; letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  background: transparent;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  text-decoration: none; cursor: none;
+  position: relative; overflow: hidden;
+  transition: color .3s;
+}
+.btn-primary::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--cyan); transform: translateX(-102%);
+  transition: transform .3s ease;
+}
+.btn-primary:hover::before { transform: translateX(0); }
+.btn-primary:hover { color: var(--dark); }
+.btn-primary span { position: relative; z-index: 1; }
+
+.btn-ghost {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem; letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--dim); text-decoration: none; cursor: none;
+  transition: border-color .3s, color .3s;
+}
+.btn-ghost:hover { border-color: var(--green); color: var(--green); }
+
+.hero-stats {
+  display: flex; gap: 48px; justify-content: center;
+  margin-top: 64px; flex-wrap: wrap;
+  animation: fadeUp 0.8s ease 0.75s both;
+}
+.stat { text-align: center; }
+.stat-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 2.2rem; font-weight: 700;
+  color: var(--cyan); line-height: 1;
+}
+.stat-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 2px;
+  color: var(--dim); text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.scroll-down {
+  position: absolute; bottom: 32px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 3px; color: var(--dim);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  animation: fadeUp 1s ease 1s both;
+}
+.scroll-line {
+  width: 1px; height: 50px;
+  background: linear-gradient(var(--cyan), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse { 0%,100%{opacity:.3} 50%{opacity:1} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SECTION WRAPPER ── */
+.section-wrap { max-width: 1120px; margin: 0 auto; padding: 100px 40px; }
+.section-header { margin-bottom: 60px; }
+.section-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 4px; color: var(--green);
+  text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-tag::before {
+  content: '//'; color: var(--dim);
+}
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700; color: #fff;
+  line-height: 1.1;
+}
+.section-title span { color: var(--cyan); }
+
+/* ── ABOUT ── */
+#about { background: var(--dark2); }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 64px; align-items: center;
+}
+.about-avatar {
+  position: relative;
+}
+.avatar-frame {
+  width: 100%; max-width: 320px;
+  aspect-ratio: 1;
+  border: 1px solid var(--border);
+  position: relative;
+  background: var(--panel);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.avatar-frame::before, .avatar-frame::after {
+  content: '';
+  position: absolute;
+}
+.avatar-frame::before {
+  top: 12px; left: 12px; right: 12px; bottom: 12px;
+  border: 1px solid rgba(0,212,255,0.1);
+}
+.avatar-frame::after {
+  top: -1px; left: -1px;
+  width: 40px; height: 40px;
+  border-top: 2px solid var(--cyan);
+  border-left: 2px solid var(--cyan);
+}
+.avatar-icon {
+  font-size: 7rem; user-select: none;
+  filter: drop-shadow(0 0 30px rgba(0,212,255,0.5));
+}
+.avatar-corner {
+  position: absolute; bottom: -1px; right: -1px;
+  width: 40px; height: 40px;
+  border-bottom: 2px solid var(--cyan);
+  border-right: 2px solid var(--cyan);
+}
+.avatar-label {
+  position: absolute; bottom: 12px; left: 0; right: 0;
+  text-align: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 3px; color: var(--green);
+}
+
+.about-text p {
+  font-size: 1.05rem; line-height: 1.8;
+  color: var(--text); margin-bottom: 20px; font-weight: 300;
+}
+.about-text p strong { color: var(--cyan); font-weight: 600; }
+
+.about-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 1px;
+  color: var(--cyan); border: 1px solid rgba(0,212,255,0.25);
+  padding: 5px 12px; text-transform: uppercase;
+  transition: background .2s, border-color .2s;
+}
+.tag:hover { background: rgba(0,212,255,0.08); border-color: var(--cyan); }
+
+/* ── SKILLS ── */
+#skills { background: var(--dark); }
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+.skill-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 28px;
+  position: relative; overflow: hidden;
+  transition: border-color .3s, transform .3s;
+}
+.skill-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 3px; height: 0;
+  background: var(--cyan);
+  transition: height .4s ease;
+}
+.skill-card:hover { border-color: rgba(0,212,255,0.5); transform: translateY(-3px); }
+.skill-card:hover::before { height: 100%; }
+.skill-card-icon { font-size: 1.8rem; margin-bottom: 14px; }
+.skill-card-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem; font-weight: 700;
+  color: var(--cyan); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.skill-item { margin-bottom: 14px; }
+.skill-label {
+  display: flex; justify-content: space-between;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem; color: var(--text);
+  margin-bottom: 6px;
+}
+.skill-pct { color: var(--green); }
+.skill-bar-bg {
+  height: 3px; background: rgba(255,255,255,0.06);
+  position: relative; overflow: hidden;
+}
+.skill-bar {
+  height: 100%; background: linear-gradient(90deg, var(--blue), var(--cyan));
+  width: 0; transition: width 1.2s ease;
+  position: relative;
+}
+.skill-bar::after {
+  content: '';
+  position: absolute; right: 0; top: -2px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+/* ── EXPERIENCE ── */
+#experience { background: var(--dark2); }
+.timeline { position: relative; padding-left: 36px; }
+.timeline::before {
+  content: '';
+  position: absolute; left: 0; top: 6px; bottom: 0;
+  width: 1px; background: linear-gradient(var(--cyan), transparent);
+}
+.timeline-item { position: relative; margin-bottom: 56px; }
+.timeline-dot {
+  position: absolute; left: -41px; top: 6px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--dark); border: 2px solid var(--cyan);
+  box-shadow: 0 0 12px rgba(0,212,255,0.6);
+}
+.timeline-dot::after {
+  content: '';
+  position: absolute; inset: -4px;
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.4);opacity:0} }
+.timeline-meta {
+  display: flex; align-items: center; gap: 16px;
+  flex-wrap: wrap; margin-bottom: 10px;
+}
+.timeline-date {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 2px;
+  color: var(--green); text-transform: uppercase;
+}
+.timeline-type {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem; color: var(--dim); letter-spacing: 1px;
+}
+.timeline-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.05rem; font-weight: 700;
+  color: #fff; margin-bottom: 4px;
+}
+.timeline-company {
+  font-size: 0.92rem; color: var(--cyan);
+  font-family: 'Share Tech Mono', monospace;
+  margin-bottom: 18px;
+}
+.timeline-points { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.timeline-points li {
+  position: relative; padding-left: 20px;
+  font-size: 0.95rem; line-height: 1.65; color: var(--text);
+  font-weight: 300;
+}
+.timeline-points li::before {
+  content: '▸';
+  position: absolute; left: 0; top: 0;
+  color: var(--cyan); font-size: 0.75rem;
+}
+
+/* ── PROJECTS ── */
+#projects { background: var(--dark); }
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 28px;
 }
 .project-card {
-transition: all 0.3s ease;
+  background: var(--dark2);
+  border: 1px solid var(--border);
+  padding: 0; overflow: hidden;
+  position: relative;
+  transition: border-color .3s, transform .3s;
 }
-.project-card:hover {
-transform: translateY(-10px);
-box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+.project-card:hover { border-color: rgba(0,212,255,0.45); transform: translateY(-4px); }
+.project-card:hover .project-img-overlay { opacity: 0.8; }
+.project-header {
+  padding: 28px 28px 0;
+  display: flex; justify-content: space-between; align-items: flex-start;
 }
-.custom-input {
-border: none;
-border-bottom: 2px solid #e5e7eb;
-transition: all 0.3s ease;
+.project-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 2.4rem; font-weight: 900;
+  color: rgba(0,212,255,0.07); line-height: 1;
+  user-select: none;
 }
-.custom-input:focus {
-outline: none;
-border-bottom-color: #1a365d;
+.project-icon { font-size: 1.6rem; }
+.project-body { padding: 16px 28px 28px; }
+.project-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.9rem; font-weight: 700;
+  color: #fff; margin-bottom: 12px;
+  line-height: 1.4;
 }
-.custom-checkbox {
-appearance: none;
-width: 18px;
-height: 18px;
-border: 2px solid #1a365d;
-border-radius: 4px;
-position: relative;
-cursor: pointer;
+.project-desc {
+  font-size: 0.92rem; line-height: 1.65;
+  color: var(--text); font-weight: 300; margin-bottom: 20px;
 }
-.custom-checkbox:checked {
-background-color: #1a365d;
+.project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.project-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 1px;
+  color: var(--green); border: 1px solid rgba(0,255,65,0.2);
+  padding: 3px 10px; text-transform: uppercase;
 }
-.custom-checkbox:checked::after {
-content: "✓";
-position: absolute;
-color: white;
-font-size: 12px;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
+.project-footer {
+  border-top: 1px solid var(--border);
+  padding: 14px 28px;
+  display: flex; align-items: center; justify-content: space-between;
 }
-.custom-switch {
-position: relative;
-display: inline-block;
-width: 50px;
-height: 24px;
+.project-impact {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 2px;
+  color: var(--dim);
 }
-.custom-switch input {
-opacity: 0;
-width: 0;
-height: 0;
+.project-impact strong { color: var(--orange); }
+
+/* ── CERTS ── */
+#certifications { background: var(--dark2); }
+.certs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
 }
-.slider {
-position: absolute;
-cursor: pointer;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-background-color: #ccc;
-transition: .4s;
-border-radius: 34px;
+.cert-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 24px 28px;
+  display: flex; gap: 20px; align-items: flex-start;
+  transition: border-color .3s;
 }
-.slider:before {
-position: absolute;
-content: "";
-height: 18px;
-width: 18px;
-left: 3px;
-bottom: 3px;
-background-color: white;
-transition: .4s;
-border-radius: 50%;
+.cert-card:hover { border-color: rgba(0,212,255,0.4); }
+.cert-icon {
+  width: 44px; height: 44px; flex-shrink: 0;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  background: rgba(0,212,255,0.05);
 }
-input:checked + .slider {
-background-color: #1a365d;
+.cert-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  color: #fff; margin-bottom: 5px; line-height: 1.3;
 }
-input:checked + .slider:before {
-transform: translateX(26px);
+.cert-issuer {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 2px;
+  color: var(--cyan); text-transform: uppercase;
+}
+
+/* ── RESEARCH ── */
+#research { background: var(--dark); }
+.research-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 40px;
+  position: relative; overflow: hidden;
+}
+.research-card::after {
+  content: '"';
+  position: absolute; right: 40px; top: 10px;
+  font-size: 10rem; color: rgba(0,212,255,0.04);
+  font-family: Georgia, serif; line-height: 1;
+}
+.research-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.3rem; font-weight: 700;
+  color: #fff; margin-bottom: 16px; line-height: 1.4;
+}
+.research-title span { color: var(--cyan); }
+.research-meta {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 2px;
+  color: var(--green); margin-bottom: 20px;
+}
+.research-desc { font-size: 0.98rem; line-height: 1.7; color: var(--text); font-weight: 300; }
+
+/* ── CONTACT ── */
+#contact { background: var(--dark2); }
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px; align-items: start;
+}
+.contact-info h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1rem; color: #fff;
+  margin-bottom: 8px;
+}
+.contact-info p {
+  font-size: 0.95rem; line-height: 1.7; color: var(--text);
+  font-weight: 300; margin-bottom: 36px;
+}
+.contact-links { display: flex; flex-direction: column; gap: 14px; }
+.contact-link {
+  display: flex; align-items: center; gap: 14px;
+  text-decoration: none; font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem; color: var(--text);
+  transition: color .2s;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+}
+.contact-link:hover { color: var(--cyan); border-color: rgba(0,212,255,0.4); }
+.contact-link-icon {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+
+/* ── Terminal Form ── */
+.terminal {
+  background: #020d17;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.terminal-bar {
+  background: #071422;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-body { padding: 24px; }
+.t-line {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem; margin-bottom: 16px; color: var(--dim);
+}
+.t-line span { color: var(--green); }
+.t-line em { color: var(--cyan); font-style: normal; }
+.t-input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.t-prompt {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem; color: var(--green); flex-shrink: 0;
+}
+.t-input {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem; color: #fff;
+  background: transparent; border: none;
+  border-bottom: 1px solid rgba(0,212,255,0.2);
+  flex: 1; outline: none; padding: 4px 0;
+}
+.t-input::placeholder { color: var(--dim); }
+.t-input:focus { border-bottom-color: var(--cyan); }
+.t-textarea {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem; color: #fff;
+  background: transparent; border: none;
+  border-bottom: 1px solid rgba(0,212,255,0.2);
+  width: 100%; outline: none; padding: 4px 0;
+  resize: none; height: 80px;
+}
+.t-textarea:focus { border-bottom-color: var(--cyan); }
+.t-submit {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem; letter-spacing: 2px;
+  color: var(--dark); background: var(--cyan);
+  border: none; padding: 12px 28px;
+  cursor: none; margin-top: 8px;
+  transition: background .2s;
+  text-transform: uppercase;
+}
+.t-submit:hover { background: var(--green); }
+.t-confirm { color: var(--green); font-family: 'Share Tech Mono',monospace; font-size:0.78rem; display:none; margin-top:12px; }
+
+/* ── PII Consent ── */
+.t-consent-row {
+  margin: 16px 0 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(0,212,255,0.15);
+  background: rgba(0,212,255,0.03);
+}
+.t-consent-label {
+  display: flex; gap: 12px; align-items: flex-start;
+  cursor: none;
+}
+.t-checkbox { display: none; }
+.t-checkbox-custom {
+  width: 16px; height: 16px; flex-shrink: 0;
+  border: 1px solid var(--cyan);
+  background: transparent; margin-top: 2px;
+  position: relative; transition: background .2s;
+  display: inline-block;
+}
+.t-checkbox:checked + .t-checkbox-custom {
+  background: var(--cyan);
+}
+.t-checkbox:checked + .t-checkbox-custom::after {
+  content: '✔';
+  position: absolute; top: -1px; left: 2px;
+  font-size: 10px; color: var(--dark); font-weight: bold;
+}
+.t-consent-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem; line-height: 1.7; color: var(--dim);
+}
+.t-privacy-note {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem; line-height: 1.9; color: var(--dim);
+  border-left: 2px solid rgba(0,255,65,0.3);
+  padding: 10px 14px; margin-bottom: 14px;
+  background: rgba(0,255,65,0.03);
+  display: none;
+}
+.t-privacy-note.open { display: block; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+  background: var(--dark); z-index: 2; position: relative;
+}
+.footer-copy {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 2px; color: var(--dim);
+}
+.footer-copy span { color: var(--cyan); }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 2px;
+  color: var(--dim); text-decoration: none;
+  transition: color .2s;
+}
+.footer-links a:hover { color: var(--cyan); }
+
+/* ── FLOATING DECOR ── */
+.hex-decor {
+  position: absolute; font-size: 6rem;
+  color: rgba(0,212,255,0.025);
+  font-family: 'Share Tech Mono', monospace;
+  user-select: none; pointer-events: none;
+  animation: float 8s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+
+/* ── UTILITY ── */
+.glitch {
+  position: relative;
+}
+.glitch::before, .glitch::after {
+  content: attr(data-text);
+  position: absolute; inset: 0;
+  overflow: hidden;
+}
+.glitch::before {
+  left: 2px; text-shadow: -2px 0 var(--red);
+  clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+  animation: glitch1 4s infinite linear;
+}
+.glitch::after {
+  left: -2px; text-shadow: 2px 0 var(--cyan);
+  clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+  animation: glitch2 5s infinite linear;
+}
+@keyframes glitch1 {
+  0%,90%,100%{opacity:0;transform:translate(0)} 91%{opacity:1;transform:translate(-3px)} 95%{transform:translate(3px)} 98%{transform:translate(-1px)}
+}
+@keyframes glitch2 {
+  0%,85%,100%{opacity:0;transform:translate(0)} 86%{opacity:1;transform:translate(3px)} 90%{transform:translate(-3px)}
+}
+
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .section-wrap { padding: 70px 20px; }
+  .about-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 28px; }
+  footer { flex-direction: column; text-align: center; }
 }
 </style>
 </head>
-<body class="bg-gray-50">
-<!-- Navigation Bar -->
-<nav class="fixed top-0 left-0 w-full bg-white bg-opacity-90 backdrop-blur-md z-50 shadow-sm">
-<div class="container mx-auto px-4 py-3 flex justify-between items-center">
-<a href="#" class="text-primary font-bold text-xl">RHV</a>
-<div class="hidden md:flex items-center space-x-8">
-<a href="#about" class="text-gray-700 hover:text-primary transition-colors">About</a>
-<a href="#skills" class="text-gray-700 hover:text-primary transition-colors">Skills</a>
-<a href="#experience" class="text-gray-700 hover:text-primary transition-colors">Experience</a>
-<a href="#projects" class="text-gray-700 hover:text-primary transition-colors">Projects</a>
-<a href="#education" class="text-gray-700 hover:text-primary transition-colors">Education</a>
-<a href="#contact" class="bg-primary text-white px-4 py-2 !rounded-button whitespace-nowrap">Contact Me</a>
-</div>
-<button class="md:hidden w-10 h-10 flex items-center justify-center">
-<i class="ri-menu-line ri-lg text-primary"></i>
-</button>
-</div>
-</nav>
-<!-- Hero Section -->
-<header class="pt-20 relative overflow-hidden" style="background-image: linear-gradient(to right, #1a365d, #0f172a); min-height: 600px;">
-<div class="absolute inset-0 opacity-10">
-<div class="absolute top-1/4 left-1/4 w-16 h-16 flex items-center justify-center">
-<i class="ri-shield-keyhole-line ri-3x text-white"></i>
-</div>
-<div class="absolute top-1/3 right-1/4 w-16 h-16 flex items-center justify-center">
-<i class="ri-code-s-slash-line ri-3x text-white"></i>
-</div>
-<div class="absolute bottom-1/4 left-1/3 w-16 h-16 flex items-center justify-center">
-<i class="ri-terminal-box-line ri-3x text-white"></i>
-</div>
-<div class="absolute bottom-1/3 right-1/3 w-16 h-16 flex items-center justify-center">
-<i class="ri-bug-line ri-3x text-white"></i>
-</div>
-</div>
-<div class="container mx-auto px-4 py-20 flex flex-col md:flex-row items-center justify-between">
-<div class="md:w-1/2 text-white z-10">
-<h1 class="text-4xl md:text-5xl font-bold mb-4">Rajath H V</h1>
-<div class="h-12 overflow-hidden">
-<p class="typing-animation text-xl md:text-2xl mb-6">Cybersecurity Enthusiast | Full-Stack Developer</p>
-</div>
-<p class="text-gray-300 mb-8">Specialized in network security, penetration testing, and building secure web applications with modern technologies.</p>
-<div class="flex space-x-4">
-<a href="#contact" class="bg-white text-primary px-6 py-3 !rounded-button font-medium whitespace-nowrap hover:bg-gray-100 transition-colors">Hire Me</a>
-<a href="#projects" class="border border-white text-white px-6 py-3 !rounded-button font-medium whitespace-nowrap hover:bg-white hover:bg-opacity-10 transition-colors">View Projects</a>
-</div>
-</div>
-<div class="md:w-1/2 mt-12 md:mt-0 flex justify-center z-10">
-<div class="w-64 h-64 rounded-full bg-white bg-opacity-10 border-4 border-white border-opacity-20 flex items-center justify-center">
-<i class="ri-user-3-line ri-5x text-white"></i>
-</div>
-</div>
-</div>
-<div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
-</header>
-<!-- Contact Bar -->
-<div class="bg-white py-4 shadow-sm">
-<div class="container mx-auto px-4 flex flex-wrap justify-center md:justify-between items-center">
-<div class="flex flex-wrap justify-center gap-6 mb-4 md:mb-0">
-<div class="flex items-center">
-<div class="w-8 h-8 flex items-center justify-center text-primary">
-<i class="ri-phone-line"></i>
-</div>
-<span class="ml-2 text-gray-700">+91 6360463586</span>
-</div>
-<div class="flex items-center">
-<div class="w-8 h-8 flex items-center justify-center text-primary">
-<i class="ri-mail-line"></i>
-</div>
-<span class="ml-2 text-gray-700">rajathveeraiah20@gmail.com</span>
-</div>
-<div class="flex items-center">
-<div class="w-8 h-8 flex items-center justify-center text-primary">
-<i class="ri-map-pin-line"></i>
-</div>
-<span class="ml-2 text-gray-700">Bengaluru, India</span>
-</div>
-</div>
-<div class="flex gap-4">
-<a href="https://linkedin.com" target="_blank" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
-<i class="ri-linkedin-fill"></i>
-</a>
-<a href="https://github.com" target="_blank" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
-<i class="ri-github-fill"></i>
-</a>
-<a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
-<i class="ri-twitter-fill"></i>
-</a>
-</div>
-</div>
-</div>
-<!-- About Section -->
-<section id="about" class="py-20">
-<div class="container mx-auto px-4">
-<div class="text-center mb-16">
-<h2 class="text-3xl font-bold text-gray-900 mb-4">About Me</h2>
-<div class="w-20 h-1 bg-primary mx-auto"></div>
-</div>
-<div class="gradient-border p-8 max-w-4xl mx-auto bg-white shadow-lg">
-<p class="text-gray-700 mb-6 leading-relaxed">
-I am a dedicated cybersecurity professional with extensive hands-on experience in vulnerability assessment, penetration testing, and network security. My expertise spans across the full stack development spectrum, with proficiency in React.js, Node.js, PHP, and MySQL.
-</p>
-<p class="text-gray-700 mb-6 leading-relaxed">
-With a strong foundation in OWASP security principles and a passion for creating secure digital solutions, I've successfully led research initiatives in data privacy and implemented robust security protocols for various applications.
-</p>
-<div class="flex flex-wrap gap-3 mt-8">
-<span class="bg-gray-100 text-primary px-3 py-1 rounded-full text-sm font-medium">Penetration Testing</span>
-<span class="bg-gray-100 text-primary px-3 py-1 rounded-full text-sm font-medium">OWASP</span>
-<span class="bg-gray-100 text-primary px-3 py-1 rounded-full text-sm font-medium">React.js</span>
-<span class="bg-gray-100 text-primary px-3 py-1 rounded-full text-sm font-medium">Node.js</span>
-<span class="bg-gray-100 text-primary px-3 py-1 rounded-full text-sm font-medium">PHP</span>
-<span class="bg-gray-100 text-primary px-3 py-1 rounded-full text-sm font-medium">MySQL</span>
-<span class="bg-gray-100 text-primary px-3 py-1 rounded-full text-sm font-medium">Wireshark</span>
-<span class="bg-gray-100 text-primary px-3 py-1 rounded-full text-sm font-medium">Burp Suite</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Skills Section -->
-<section id="skills" class="py-20 bg-gray-50">
-<div class="container mx-auto px-4">
-<div class="text-center mb-16">
-<h2 class="text-3xl font-bold text-gray-900 mb-4">Skills & Expertise</h2>
-<div class="w-20 h-1 bg-primary mx-auto"></div>
-</div>
-<div class="mb-16">
-<h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">Technical Skills</h3>
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-<div class="bg-white p-6 rounded shadow-md hover:shadow-lg transition-shadow">
-<div class="flex items-center mb-4">
-<div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary mr-3">
-<i class="ri-code-s-slash-line ri-lg"></i>
-</div>
-<h4 class="font-medium text-gray-900">Python</h4>
-</div>
-<div class="w-full bg-gray-200 rounded-full h-2">
-<div class="bg-primary h-2 rounded-full" style="width: 90%"></div>
-</div>
-<p class="text-sm text-gray-600 mt-2">Advanced</p>
-</div>
-<div class="bg-white p-6 rounded shadow-md hover:shadow-lg transition-shadow">
-<div class="flex items-center mb-4">
-<div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary mr-3">
-<i class="ri-database-2-line ri-lg"></i>
-</div>
-<h4 class="font-medium text-gray-900">SQL</h4>
-</div>
-<div class="w-full bg-gray-200 rounded-full h-2">
-<div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
-</div>
-<p class="text-sm text-gray-600 mt-2">Proficient</p>
-</div>
-<div class="bg-white p-6 rounded shadow-md hover:shadow-lg transition-shadow">
-<div class="flex items-center mb-4">
-<div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary mr-3">
-<i class="ri-terminal-box-line ri-lg"></i>
-</div>
-<h4 class="font-medium text-gray-900">Kali Linux</h4>
-</div>
-<div class="w-full bg-gray-200 rounded-full h-2">
-<div class="bg-primary h-2 rounded-full" style="width: 80%"></div>
-</div>
-<p class="text-sm text-gray-600 mt-2">Advanced</p>
-</div>
-<div class="bg-white p-6 rounded shadow-md hover:shadow-lg transition-shadow">
-<div class="flex items-center mb-4">
-<div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary mr-3">
-<i class="ri-cloud-line ri-lg"></i>
-</div>
-<h4 class="font-medium text-gray-900">AWS</h4>
-</div>
-<div class="w-full bg-gray-200 rounded-full h-2">
-<div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
-</div>
-<p class="text-sm text-gray-600 mt-2">Intermediate</p>
-</div>
-<div class="bg-white p-6 rounded shadow-md hover:shadow-lg transition-shadow">
-<div class="flex items-center mb-4">
-<div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary mr-3">
-<i class="ri-reactjs-line ri-lg"></i>
-</div>
-<h4 class="font-medium text-gray-900">React.js</h4>
-</div>
-<div class="w-full bg-gray-200 rounded-full h-2">
-<div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
-</div>
-<p class="text-sm text-gray-600 mt-2">Proficient</p>
-</div>
-<div class="bg-white p-6 rounded shadow-md hover:shadow-lg transition-shadow">
-<div class="flex items-center mb-4">
-<div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary mr-3">
-<i class="ri-nodejs-line ri-lg"></i>
-</div>
-<h4 class="font-medium text-gray-900">Node.js</h4>
-</div>
-<div class="w-full bg-gray-200 rounded-full h-2">
-<div class="bg-primary h-2 rounded-full" style="width: 80%"></div>
-</div>
-<p class="text-sm text-gray-600 mt-2">Proficient</p>
-</div>
-<div class="bg-white p-6 rounded shadow-md hover:shadow-lg transition-shadow">
-<div class="flex items-center mb-4">
-<div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary mr-3">
-<i class="ri-html5-line ri-lg"></i>
-</div>
-<h4 class="font-medium text-gray-900">HTML/CSS</h4>
-</div>
-<div class="w-full bg-gray-200 rounded-full h-2">
-<div class="bg-primary h-2 rounded-full" style="width: 90%"></div>
-</div>
-<p class="text-sm text-gray-600 mt-2">Advanced</p>
-</div>
-<div class="bg-white p-6 rounded shadow-md hover:shadow-lg transition-shadow">
-<div class="flex items-center mb-4">
-<div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary mr-3">
-<i class="ri-shield-keyhole-line ri-lg"></i>
-</div>
-<h4 class="font-medium text-gray-900">Wireshark</h4>
-</div>
-<div class="w-full bg-gray-200 rounded-full h-2">
-<div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
-</div>
-<p class="text-sm text-gray-600 mt-2">Proficient</p>
-</div>
-</div>
-</div>
-<div>
-<h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">Certifications</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div class="bg-white p-6 rounded shadow-md hover:shadow-lg transition-shadow">
-<div class="flex items-center">
-<div class="w-12 h-12 flex items-center justify-center bg-primary rounded-full text-white mr-4">
-<i class="ri-award-line ri-lg"></i>
-</div>
-<div>
-<h4 class="font-medium text-gray-900">(ISC)² Certified</h4>
-<p class="text-sm text-gray-600">Issued: January 2024</p>
-</div>
-</div>
-<div class="mt-4 flex justify-end">
-<button id="verify-isc2" class="text-primary hover:underline text-sm flex items-center">
-Verify Certificate
-<i class="ri-external-link-line ml-1"></i>
-</button>
-</div>
-</div>
-<div class="bg-white p-6 rounded shadow-md hover:shadow-lg transition-shadow">
-<div class="flex items-center">
-<div class="w-12 h-12 flex items-center justify-center bg-primary rounded-full text-white mr-4">
-<i class="ri-shield-check-line ri-lg"></i>
-</div>
-<div>
-<h4 class="font-medium text-gray-900">EC-Council Network Defense</h4>
-<p class="text-sm text-gray-600">Issued: November 2023</p>
-</div>
-</div>
-<div class="mt-4 flex justify-end">
-<button id="verify-eccouncil" class="text-primary hover:underline text-sm flex items-center">
-Verify Certificate
-<i class="ri-external-link-line ml-1"></i>
-</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Experience Section -->
-<section id="experience" class="py-20">
-<div class="container mx-auto px-4">
-<div class="text-center mb-16">
-<h2 class="text-3xl font-bold text-gray-900 mb-4">Professional Experience</h2>
-<div class="w-20 h-1 bg-primary mx-auto"></div>
-</div>
-<div class="relative max-w-4xl mx-auto">
-<div class="timeline-connector"></div>
-<div class="flex flex-col md:flex-row items-center mb-16">
-<div class="md:w-1/2 md:pr-8 mb-6 md:mb-0 md:text-right">
-<div class="bg-white p-6 rounded shadow-lg hover:shadow-xl transition-shadow">
-<h3 class="text-xl font-semibold text-gray-900 mb-2">ShadowFox Internship</h3>
-<p class="text-gray-600 mb-4">August 2024</p>
-<ul class="space-y-2 text-gray-700">
-<li class="flex items-center md:justify-end">
-<span>Performed 50+ network scans using Wireshark</span>
-<div class="w-6 h-6 flex items-center justify-center text-primary ml-2">
-<i class="ri-radar-line"></i>
-</div>
-</li>
-<li class="flex items-center md:justify-end">
-<span>Identified 15+ critical vulnerabilities (SQLi/XSS)</span>
-<div class="w-6 h-6 flex items-center justify-center text-primary ml-2">
-<i class="ri-bug-line"></i>
-</div>
-</li>
-<li class="flex items-center md:justify-end">
-<span>Team collaboration in security protocol development</span>
-<div class="w-6 h-6 flex items-center justify-center text-primary ml-2">
-<i class="ri-team-line"></i>
-</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="timeline-node w-10 h-10 flex items-center justify-center"></div>
-<div class="md:w-1/2 md:pl-8"></div>
-</div>
-<div class="flex flex-col md:flex-row items-center mb-16">
-<div class="md:w-1/2 md:pr-8"></div>
-<div class="timeline-node w-10 h-10 flex items-center justify-center"></div>
-<div class="md:w-1/2 md:pl-8">
-<div class="bg-white p-6 rounded shadow-lg hover:shadow-xl transition-shadow">
-<h3 class="text-xl font-semibold text-gray-900 mb-2">Web Security Analyst</h3>
-<p class="text-gray-600 mb-4">May 2023 - July 2023</p>
-<ul class="space-y-2 text-gray-700">
-<li class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary mr-2">
-<i class="ri-lock-line"></i>
-</div>
-<span>Conducted security audits for 5 web applications</span>
-</li>
-<li class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary mr-2">
-<i class="ri-file-code-line"></i>
-</div>
-<span>Implemented secure coding practices in React.js</span>
-</li>
-<li class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary mr-2">
-<i class="ri-shield-check-line"></i>
-</div>
-<span>Reduced security vulnerabilities by 40%</span>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="flex flex-col md:flex-row items-center">
-<div class="md:w-1/2 md:pr-8 mb-6 md:mb-0 md:text-right">
-<div class="bg-white p-6 rounded shadow-lg hover:shadow-xl transition-shadow">
-<h3 class="text-xl font-semibold text-gray-900 mb-2">Research Assistant</h3>
-<p class="text-gray-600 mb-4">January 2023 - April 2023</p>
-<ul class="space-y-2 text-gray-700">
-<li class="flex items-center md:justify-end">
-<span>Contributed to research on Big Data privacy</span>
-<div class="w-6 h-6 flex items-center justify-center text-primary ml-2">
-<i class="ri-database-2-line"></i>
-</div>
-</li>
-<li class="flex items-center md:justify-end">
-<span>Developed data anonymization techniques</span>
-<div class="w-6 h-6 flex items-center justify-center text-primary ml-2">
-<i class="ri-eye-off-line"></i>
-</div>
-</li>
-<li class="flex items-center md:justify-end">
-<span>Published findings in academic journal</span>
-<div class="w-6 h-6 flex items-center justify-center text-primary ml-2">
-<i class="ri-file-paper-2-line"></i>
-</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="timeline-node w-10 h-10 flex items-center justify-center"></div>
-<div class="md:w-1/2 md:pl-8"></div>
-</div>
-</div>
-</div>
-</section>
-<!-- Projects Section -->
-<section id="projects" class="py-20 bg-gray-50">
-<div class="container mx-auto px-4">
-<div class="text-center mb-16">
-<h2 class="text-3xl font-bold text-gray-900 mb-4">Featured Projects</h2>
-<div class="w-20 h-1 bg-primary mx-auto"></div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="project-card bg-white rounded-lg overflow-hidden shadow-lg">
-<div class="h-64 bg-gray-200 relative">
-<img src="https://public.readdy.ai/ai/img_res/bd2c451c94598bd263e395ca35203bb3.jpg" alt="Pet Adoption Platform" class="w-full h-full object-cover object-top">
-<div class="absolute inset-0 bg-primary bg-opacity-20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-<a href="#" class="bg-white text-primary px-4 py-2 !rounded-button font-medium whitespace-nowrap">View Demo</a>
-</div>
-</div>
-<div class="p-6">
-<h3 class="text-xl font-semibold text-gray-900 mb-2">Pet Adoption Platform</h3>
-<p class="text-gray-700 mb-4">A secure platform connecting pet owners with potential adopters, featuring JWT authentication and advanced matching algorithms.</p>
-<div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">React.js</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">PHP</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">MySQL</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">JWT</span>
-</div>
-<div class="flex items-center justify-between">
-<div class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary">
-<i class="ri-speed-up-line"></i>
-</div>
-<span class="text-sm text-gray-600 ml-1">40% faster matching</span>
-</div>
-<a href="https://github.com" target="_blank" class="text-primary hover:underline text-sm flex items-center">
-View Code
-<i class="ri-github-fill ml-1"></i>
-</a>
-</div>
-</div>
-</div>
-<div class="project-card bg-white rounded-lg overflow-hidden shadow-lg">
-<div class="h-64 bg-gray-200 relative">
-<img src="https://public.readdy.ai/ai/img_res/5235c608953306d19be3d618d5e88234.jpg" alt="Symptom Checker App" class="w-full h-full object-cover object-top">
-<div class="absolute inset-0 bg-primary bg-opacity-20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-<a href="#" class="bg-white text-primary px-4 py-2 !rounded-button font-medium whitespace-nowrap">View Demo</a>
-</div>
-</div>
-<div class="p-6">
-<h3 class="text-xl font-semibold text-gray-900 mb-2">Symptom Checker App</h3>
-<p class="text-gray-700 mb-4">An AI-powered application that helps users identify potential health issues based on reported symptoms with high accuracy.</p>
-<div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">React.js</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">Node.js</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">Express</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">MongoDB</span>
-</div>
-<div class="flex items-center justify-between">
-<div class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary">
-<i class="ri-percent-line"></i>
-</div>
-<span class="text-sm text-gray-600 ml-1">85% accuracy rate</span>
-</div>
-<a href="https://github.com" target="_blank" class="text-primary hover:underline text-sm flex items-center">
-View Code
-<i class="ri-github-fill ml-1"></i>
-</a>
-</div>
-</div>
-</div>
-<div class="project-card bg-white rounded-lg overflow-hidden shadow-lg">
-<div class="h-64 bg-gray-200 relative">
-<img src="https://public.readdy.ai/ai/img_res/e4f1c3fefbfd864dabe5186c68b2fd5c.jpg" alt="Network Security Monitor" class="w-full h-full object-cover object-top">
-<div class="absolute inset-0 bg-primary bg-opacity-20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-<a href="#" class="bg-white text-primary px-4 py-2 !rounded-button font-medium whitespace-nowrap">View Demo</a>
-</div>
-</div>
-<div class="p-6">
-<h3 class="text-xl font-semibold text-gray-900 mb-2">Network Security Monitor</h3>
-<p class="text-gray-700 mb-4">Real-time network traffic analysis tool that detects and alerts on suspicious activities using machine learning algorithms.</p>
-<div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">Python</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">Flask</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">TensorFlow</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">D3.js</span>
-</div>
-<div class="flex items-center justify-between">
-<div class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary">
-<i class="ri-shield-check-line"></i>
-</div>
-<span class="text-sm text-gray-600 ml-1">92% threat detection</span>
-</div>
-<a href="https://github.com" target="_blank" class="text-primary hover:underline text-sm flex items-center">
-View Code
-<i class="ri-github-fill ml-1"></i>
-</a>
-</div>
-</div>
-</div>
-<div class="project-card bg-white rounded-lg overflow-hidden shadow-lg">
-<div class="h-64 bg-gray-200 relative">
-<img src="https://public.readdy.ai/ai/img_res/bb08f9517b3127a1bb2e9857dc8f7b84.jpg" alt="Secure E-commerce Platform" class="w-full h-full object-cover object-top">
-<div class="absolute inset-0 bg-primary bg-opacity-20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-<a href="#" class="bg-white text-primary px-4 py-2 !rounded-button font-medium whitespace-nowrap">View Demo</a>
-</div>
-</div>
-<div class="p-6">
-<h3 class="text-xl font-semibold text-gray-900 mb-2">Secure E-commerce Platform</h3>
-<p class="text-gray-700 mb-4">A fully-featured online store with enhanced security measures including PCI compliance and fraud detection systems.</p>
-<div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">React.js</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">Node.js</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">PostgreSQL</span>
-<span class="bg-gray-100 text-primary px-2 py-1 rounded text-xs">Stripe API</span>
-</div>
-<div class="flex items-center justify-between">
-<div class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary">
-<i class="ri-secure-payment-line"></i>
-</div>
-<span class="text-sm text-gray-600 ml-1">100% PCI compliant</span>
-</div>
-<a href="https://github.com" target="_blank" class="text-primary hover:underline text-sm flex items-center">
-View Code
-<i class="ri-github-fill ml-1"></i>
-</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Education Section -->
-<section id="education" class="py-20">
-<div class="container mx-auto px-4">
-<div class="text-center mb-16">
-<h2 class="text-3xl font-bold text-gray-900 mb-4">Education & Achievements</h2>
-<div class="w-20 h-1 bg-primary mx-auto"></div>
-</div>
-<div class="flex flex-col md:flex-row gap-8 max-w-5xl mx-auto">
-<div class="md:w-1/2">
-<div class="bg-white p-8 rounded shadow-lg h-full">
-<div class="flex items-center mb-6">
-<div class="w-12 h-12 flex items-center justify-center bg-primary rounded-full text-white mr-4">
-<i class="ri-graduation-cap-line ri-lg"></i>
-</div>
-<h3 class="text-xl font-semibold text-gray-900">Academic Background</h3>
-</div>
-<div class="mb-8">
-<h4 class="font-medium text-gray-900 mb-2">B.Tech in Cybersecurity</h4>
-<p class="text-gray-700 mb-1">Garden City University, Bengaluru</p>
-<p class="text-gray-600 mb-2">2020 - 2024</p>
-<div class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary mr-2">
-<i class="ri-medal-line"></i>
-</div>
-<p class="text-gray-700">CGPA: 8.6/10</p>
-</div>
-</div>
-<div>
-<h4 class="font-medium text-gray-900 mb-2">Relevant Coursework</h4>
-<ul class="space-y-2">
-<li class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary mr-2">
-<i class="ri-checkbox-circle-line"></i>
-</div>
-<span class="text-gray-700">Network Security & Cryptography</span>
-</li>
-<li class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary mr-2">
-<i class="ri-checkbox-circle-line"></i>
-</div>
-<span class="text-gray-700">Ethical Hacking & Penetration Testing</span>
-</li>
-<li class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary mr-2">
-<i class="ri-checkbox-circle-line"></i>
-</div>
-<span class="text-gray-700">Secure Software Development</span>
-</li>
-<li class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary mr-2">
-<i class="ri-checkbox-circle-line"></i>
-</div>
-<span class="text-gray-700">Digital Forensics & Incident Response</span>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="md:w-1/2">
-<div class="bg-white p-8 rounded shadow-lg h-full">
-<div class="flex items-center mb-6">
-<div class="w-12 h-12 flex items-center justify-center bg-primary rounded-full text-white mr-4">
-<i class="ri-trophy-line ri-lg"></i>
-</div>
-<h3 class="text-xl font-semibold text-gray-900">Achievements</h3>
-</div>
-<div class="mb-8">
-<h4 class="font-medium text-gray-900 mb-2">Published Research Paper</h4>
-<p class="text-gray-700 mb-4">
-"Privacy-Preserving Techniques in Big Data Analytics: A Comprehensive Review"
-<br>
-<span class="text-gray-600">International Journal of Data Security, 2023</span>
-</p>
-<a href="#" class="text-primary hover:underline text-sm flex items-center w-fit">
-View Publication
-<i class="ri-external-link-line ml-1"></i>
-</a>
-</div>
-<div class="mb-8">
-<h4 class="font-medium text-gray-900 mb-2">Hackathon Winner</h4>
-<p class="text-gray-700 mb-2">
-1st Place at CyberDefense 2023
-<br>
-<span class="text-gray-600">Developed a real-time threat detection system</span>
-</p>
-</div>
-<div>
-<h4 class="font-medium text-gray-900 mb-2">Technical Workshops</h4>
-<ul class="space-y-2">
-<li class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary mr-2">
-<i class="ri-presentation-line"></i>
-</div>
-<span class="text-gray-700">Led workshop on OWASP Top 10 vulnerabilities</span>
-</li>
-<li class="flex items-center">
-<div class="w-6 h-6 flex items-center justify-center text-primary mr-2">
-<i class="ri-presentation-line"></i>
-</div>
-<span class="text-gray-700">Conducted training on secure coding practices</span>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Contact Section -->
-<section id="contact" class="py-20 bg-gray-50">
-<div class="container mx-auto px-4">
-<div class="text-center mb-16">
-<h2 class="text-3xl font-bold text-gray-900 mb-4">Get In Touch</h2>
-<div class="w-20 h-1 bg-primary mx-auto"></div>
-<p class="text-gray-700 mt-4 max-w-2xl mx-auto">
-Interested in working together or have a question? Feel free to reach out using the form below or through my contact details.
-</p>
-</div>
-<div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-<div class="flex flex-col md:flex-row">
-<div class="md:w-2/5 bg-primary p-8 text-white">
-<h3 class="text-xl font-semibold mb-6">Contact Information</h3>
-<div class="space-y-4 mb-8">
-<div class="flex items-center">
-<div class="w-10 h-10 flex items-center justify-center bg-white bg-opacity-10 rounded-full mr-4">
-<i class="ri-map-pin-line ri-lg"></i>
-</div>
-<span>Bengaluru, Karnataka, India</span>
-</div>
-<div class="flex items-center">
-<div class="w-10 h-10 flex items-center justify-center bg-white bg-opacity-10 rounded-full mr-4">
-<i class="ri-mail-line ri-lg"></i>
-</div>
-<span>rajathveeraiah20@gmail.com</span>
-</div>
-<div class="flex items-center">
-<div class="w-10 h-10 flex items-center justify-center bg-white bg-opacity-10 rounded-full mr-4">
-<i class="ri-phone-line ri-lg"></i>
-</div>
-<span>+91 6360463586</span>
-</div>
-</div>
-<div>
-<h4 class="text-lg font-medium mb-4">Connect With Me</h4>
-<div class="flex space-x-4">
-<a href="https://linkedin.com" target="_blank" class="w-10 h-10 flex items-center justify-center bg-white bg-opacity-10 rounded-full hover:bg-opacity-20 transition-colors">
-<i class="ri-linkedin-fill"></i>
-</a>
-<a href="https://github.com" target="_blank" class="w-10 h-10 flex items-center justify-center bg-white bg-opacity-10 rounded-full hover:bg-opacity-20 transition-colors">
-<i class="ri-github-fill"></i>
-</a>
-<a href="#" class="w-10 h-10 flex items-center justify-center bg-white bg-opacity-10 rounded-full hover:bg-opacity-20 transition-colors">
-<i class="ri-twitter-fill"></i>
-</a>
-</div>
-</div>
-</div>
-<div class="md:w-3/5 p-8">
-<h3 class="text-xl font-semibold text-gray-900 mb-6">Send Me a Message</h3>
-<form>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-<div>
-<label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-<input type="text" id="name" class="w-full px-4 py-2 border-none bg-gray-100 rounded focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Your name">
-</div>
-<div>
-<label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-<input type="email" id="email" class="w-full px-4 py-2 border-none bg-gray-100 rounded focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Your email">
-</div>
-</div>
-<div class="mb-6">
-<label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-<input type="text" id="subject" class="w-full px-4 py-2 border-none bg-gray-100 rounded focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Subject">
-</div>
-<div class="mb-6">
-<label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-<textarea id="message" rows="4" class="w-full px-4 py-2 border-none bg-gray-100 rounded focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Your message"></textarea>
-</div>
-<div class="flex items-center mb-6">
-<input type="checkbox" id="consent" class="custom-checkbox">
-<label for="consent" class="ml-2 text-sm text-gray-700">I agree to the processing of my personal data</label>
-</div>
-<button type="submit" class="bg-primary text-white px-6 py-3 !rounded-button font-medium whitespace-nowrap hover:bg-opacity-90 transition-colors">Send Message</button>
-</form>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Footer -->
-<footer class="bg-gray-900 text-white py-12">
-<div class="container mx-auto px-4">
-<div class="flex flex-col md:flex-row justify-between items-center mb-8">
-<div class="text-2xl font-bold mb-4 md:mb-0">Rajath H V</div>
-<div class="flex space-x-6">
-<a href="#about" class="hover:text-gray-300 transition-colors">About</a>
-<a href="#skills" class="hover:text-gray-300 transition-colors">Skills</a>
-<a href="#experience" class="hover:text-gray-300 transition-colors">Experience</a>
-<a href="#projects" class="hover:text-gray-300 transition-colors">Projects</a>
-<a href="#contact" class="hover:text-gray-300 transition-colors">Contact</a>
-</div>
-</div>
-<hr class="border-gray-700 mb-8">
-<div class="flex flex-col md:flex-row justify-between items-center">
-<div class="text-gray-400 mb-4 md:mb-0">
-&copy; 2025 Rajath H V. All rights reserved.
-</div>
-<div class="flex space-x-4">
-<a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-<a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-</div>
-</div>
-</div>
-</footer>
-<script>
-// Smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-anchor.addEventListener('click', function(e) {
-e.preventDefault();
-const target = document.querySelector(this.getAttribute('href'));
-if (target) {
-window.scrollTo({
-top: target.offsetTop - 80,
-behavior: 'smooth'
-});
-}
-});
-});
-// Mobile menu toggle
-const menuButton = document.querySelector('.md\\:hidden');
-menuButton.addEventListener('click', function() {
-const mobileMenu = document.createElement('div');
-mobileMenu.className = 'fixed inset-0 bg-primary bg-opacity-95 z-50 flex flex-col items-center justify-center';
-mobileMenu.innerHTML = `
-<button class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-white">
-<i class="ri-close-line ri-2x"></i>
-</button>
-<div class="flex flex-col items-center space-y-6">
-<a href="#about" class="text-white text-xl">About</a>
-<a href="#skills" class="text-white text-xl">Skills</a>
-<a href="#experience" class="text-white text-xl">Experience</a>
-<a href="#projects" class="text-white text-xl">Projects</a>
-<a href="#education" class="text-white text-xl">Education</a>
-<a href="#contact" class="bg-white text-primary px-6 py-3 !rounded-button font-medium whitespace-nowrap mt-4">Contact Me</a>
-</div>
-`;
-document.body.appendChild(mobileMenu);
-document.body.style.overflow = 'hidden';
-const closeButton = mobileMenu.querySelector('button');
-closeButton.addEventListener('click', function() {
-document.body.removeChild(mobileMenu);
-document.body.style.overflow = '';
-});
-mobileMenu.querySelectorAll('a').forEach(link => {
-link.addEventListener('click', function() {
-document.body.removeChild(mobileMenu);
-document.body.style.overflow = '';
-});
-});
-});
+<body>
 
-// Certificate verification modal functionality
-function createCertificateModal(certData) {
-  // Create modal container
-  const modalOverlay = document.createElement('div');
-  modalOverlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-  
-  // Create modal content
-  const modalContent = document.createElement('div');
-  modalContent.className = 'bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden';
-  
-  // Modal header
-  const modalHeader = document.createElement('div');
-  modalHeader.className = 'bg-primary text-white px-6 py-4 flex justify-between items-center';
-  modalHeader.innerHTML = `
-    <h3 class="text-xl font-semibold">${certData.title} - Certificate Verification</h3>
-    <button class="modal-close w-8 h-8 flex items-center justify-center rounded-full hover:bg-white hover:bg-opacity-20">
-      <i class="ri-close-line ri-lg"></i>
-    </button>
-  `;
-  
-  // Modal body
-  const modalBody = document.createElement('div');
-  modalBody.className = 'px-6 py-4';
-  modalBody.innerHTML = `
-    <div class="space-y-4">
-      <div class="flex items-center p-3 bg-gray-50 rounded">
-        <div class="w-8 h-8 flex items-center justify-center text-primary mr-3">
-          <i class="ri-fingerprint-line"></i>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Certificate ID</p>
-          <p class="font-medium">${certData.id}</p>
+<canvas id="matrix-canvas"></canvas>
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">RHV<span>.</span>SEC</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#certifications">Certs</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-status">SECURE CONNECTION</div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div style="position:relative;z-index:2">
+    <div class="hero-badge">// Cybersecurity Professional &amp; Cloud Security Specialist</div>
+    <h1 class="hero-name glitch" data-text="RAJATH H V">RAJATH <span class="accent">H V</span></h1>
+    <div class="hero-title" id="typed-title">CLOUD SECURITY &nbsp;|&nbsp; GRC &nbsp;|&nbsp; PENETRATION TESTING<span class="cursor-blink">_</span></div>
+    <p class="hero-desc">
+      Cybersecurity engineer with hands-on expertise in cloud security architecture, governance frameworks, and offensive security. Building resilient, threat-aware systems from the ground up.
+    </p>
+    <div class="hero-buttons">
+      <a href="#projects" class="btn-primary"><span>View My Work</span></a>
+      <a href="#contact" class="btn-ghost">Get In Touch</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num" data-target="10">0</div><div class="stat-label">Vulnerabilities Found</div></div>
+      <div class="stat"><div class="stat-num" data-target="3">0</div><div class="stat-label">Security Frameworks</div></div>
+      <div class="stat"><div class="stat-num" data-target="20">0</div><div class="stat-label">Vendor Assessments</div></div>
+      <div class="stat"><div class="stat-num" data-target="35">0</div><div class="stat-label">% Efficiency Gained</div></div>
+    </div>
+  </div>
+  <div class="scroll-down">
+    <div class="scroll-line"></div>
+    SCROLL
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">01 / Profile</div>
+      <h2 class="section-title">About <span>Me</span></h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-avatar reveal">
+        <div class="avatar-frame">
+          <div class="avatar-icon">🛡️</div>
+          <div class="avatar-corner"></div>
+          <div class="avatar-label">AUTHORIZED OPERATOR</div>
         </div>
       </div>
-      
-      <div class="flex items-center p-3 bg-gray-50 rounded">
-        <div class="w-8 h-8 flex items-center justify-center text-primary mr-3">
-          <i class="ri-calendar-check-line"></i>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Issue Date</p>
-          <p class="font-medium">${certData.issueDate}</p>
-        </div>
-      </div>
-      
-      <div class="flex items-center p-3 bg-gray-50 rounded">
-        <div class="w-8 h-8 flex items-center justify-center text-primary mr-3">
-          <i class="ri-calendar-close-line"></i>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Expiration Date</p>
-          <p class="font-medium">${certData.expiryDate}</p>
-        </div>
-      </div>
-      
-      <div class="flex items-center p-3 bg-gray-50 rounded">
-        <div class="w-8 h-8 flex items-center justify-center text-primary mr-3">
-          <i class="ri-verified-badge-line"></i>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Status</p>
-          <p class="font-medium text-green-600">Active</p>
+      <div class="about-text reveal reveal-delay-2">
+        <p>I'm a <strong>Cybersecurity undergraduate at Garden City University</strong> (CGPA 8.8/10) with deep expertise in Cloud Security, Governance Risk & Compliance, and Penetration Testing.</p>
+        <p>Currently interning at <strong>Mitigata Cyber Resilience</strong>, I work at the intersection of cloud security evaluation, ISO 27001:2022 / SOC 2 compliance implementation, and third-party risk management — helping organisations defend their digital perimeter from modern threats.</p>
+        <p>My approach is holistic: I think offensively to defend defensively. Whether auditing a cloud infrastructure's IAM policies or popping a web app's SQLi vulnerability, I bring the same precision and rigour.</p>
+        <div class="about-tags">
+          <span class="tag">Cloud Security</span>
+          <span class="tag">ISO 27001</span>
+          <span class="tag">SOC 2</span>
+          <span class="tag">NIST CSF</span>
+          <span class="tag">VAPT</span>
+          <span class="tag">TPRM</span>
+          <span class="tag">AWS Security</span>
+          <span class="tag">IDS / SIEM</span>
+          <span class="tag">Python</span>
         </div>
       </div>
     </div>
-  `;
-  
-  // Modal footer
-  const modalFooter = document.createElement('div');
-  modalFooter.className = 'px-6 py-4 bg-gray-50 flex justify-end';
-  modalFooter.innerHTML = `
-    <button class="modal-close mr-3 px-4 py-2 border border-gray-300 !rounded-button text-gray-700 hover:bg-gray-100 whitespace-nowrap">Close</button>
-    <a href="${certData.verifyUrl}" target="_blank" class="bg-primary text-white px-4 py-2 !rounded-button whitespace-nowrap hover:bg-opacity-90">Verify on Official Site</a>
-  `;
-  
-  // Assemble modal
-  modalContent.appendChild(modalHeader);
-  modalContent.appendChild(modalBody);
-  modalContent.appendChild(modalFooter);
-  modalOverlay.appendChild(modalContent);
-  
-  // Add to document
-  document.body.appendChild(modalOverlay);
-  document.body.style.overflow = 'hidden';
-  
-  // Close modal functionality
-  const closeModal = () => {
-    document.body.removeChild(modalOverlay);
-    document.body.style.overflow = '';
-  };
-  
-  modalOverlay.addEventListener('click', (e) => {
-    if (e.target === modalOverlay) {
-      closeModal();
-    }
-  });
-  
-  modalContent.querySelectorAll('.modal-close').forEach(btn => {
-    btn.addEventListener('click', closeModal);
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">02 / Capabilities</div>
+      <h2 class="section-title">Core <span>Skills</span></h2>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">☁️</div>
+        <div class="skill-card-title">Cloud Security</div>
+        <div class="skill-item"><div class="skill-label"><span>AWS IAM & Access Control</span><span class="skill-pct">88%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="88"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>CloudTrail / CloudWatch</span><span class="skill-pct">82%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="82"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>VPC & Network Security</span><span class="skill-pct">80%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="80"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>CSPM & Compliance Monitoring</span><span class="skill-pct">85%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="85"></div></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-1">
+        <div class="skill-card-icon">📋</div>
+        <div class="skill-card-title">GRC & Compliance</div>
+        <div class="skill-item"><div class="skill-label"><span>ISO 27001:2022</span><span class="skill-pct">90%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="90"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>SOC 2 Type I/II</span><span class="skill-pct">87%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="87"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>NIST Cybersecurity Framework</span><span class="skill-pct">85%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="85"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>Third-Party Risk (TPRM)</span><span class="skill-pct">88%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="88"></div></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-2">
+        <div class="skill-card-icon">🔍</div>
+        <div class="skill-card-title">Penetration Testing</div>
+        <div class="skill-item"><div class="skill-label"><span>Burp Suite / OWASP ZAP</span><span class="skill-pct">86%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="86"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>SQL Injection / XSS / CSRF</span><span class="skill-pct">88%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="88"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>Nmap & Network Recon</span><span class="skill-pct">82%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="82"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>Kali Linux</span><span class="skill-pct">84%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="84"></div></div></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">💻</div>
+        <div class="skill-card-title">Programming & Automation</div>
+        <div class="skill-item"><div class="skill-label"><span>Python (Security Scripting)</span><span class="skill-pct">88%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="88"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>SQL</span><span class="skill-pct">80%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="80"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>JavaScript</span><span class="skill-pct">74%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="74"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>Java</span><span class="skill-pct">70%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="70"></div></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-1">
+        <div class="skill-card-icon">🔐</div>
+        <div class="skill-card-title">Security Operations</div>
+        <div class="skill-item"><div class="skill-label"><span>IDS / Log Analysis</span><span class="skill-pct">87%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="87"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>Incident Response</span><span class="skill-pct">80%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="80"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>Threat Modelling</span><span class="skill-pct">83%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="83"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>Windows / Linux Hardening</span><span class="skill-pct">82%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="82"></div></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-2">
+        <div class="skill-card-icon">🌐</div>
+        <div class="skill-card-title">Infrastructure</div>
+        <div class="skill-item"><div class="skill-label"><span>AWS Fundamentals</span><span class="skill-pct">82%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="82"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>VMware / VirtualBox</span><span class="skill-pct">78%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="78"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>Container Security</span><span class="skill-pct">72%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="72"></div></div></div>
+        <div class="skill-item"><div class="skill-label"><span>Secure Infra Design</span><span class="skill-pct">80%</span></div><div class="skill-bar-bg"><div class="skill-bar" data-width="80"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">03 / History</div>
+      <h2 class="section-title">Work <span>Experience</span></h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-meta">
+          <span class="timeline-date">2024 – Present</span>
+          <span class="timeline-type">// Full-time Internship</span>
+        </div>
+        <div class="timeline-title">Cybersecurity Intern — GRC & Cloud Security</div>
+        <div class="timeline-company">Mitigata Cyber Resilience</div>
+        <ul class="timeline-points">
+          <li>Spearheaded implementation and monitoring of ISO 27001:2022, SOC 2, and NIST CSF controls across multi-cloud client environments, significantly elevating compliance posture.</li>
+          <li>Conducted comprehensive cloud security evaluations — reviewing IAM configurations, VPC policies, encryption mechanisms, and logging — identifying and remediating critical misconfigurations.</li>
+          <li>Executed end-to-end TPRM vendor assessments including security due diligence reviews and risk-tiering for 20+ vendor relationships.</li>
+          <li>Collaborated with internal teams and clients to prepare audit documentation, validate controls, and drive compliance reporting for external certification audits.</li>
+          <li>Developed security governance policies and CSPM frameworks, strengthening both technical and human layers of organisational cloud defence.</li>
+        </ul>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-meta">
+          <span class="timeline-date">2024</span>
+          <span class="timeline-type">// Virtual Internship</span>
+        </div>
+        <div class="timeline-title">Cybersecurity Intern — Penetration Testing</div>
+        <div class="timeline-company">ShadowFox (Virtual)</div>
+        <ul class="timeline-points">
+          <li>Executed structured web application penetration tests using Burp Suite and OWASP ZAP, uncovering 10+ critical and high-severity vulnerabilities including SQLi, XSS, and CSRF.</li>
+          <li>Produced executive-ready vulnerability assessment reports with CVSS scoring, proof-of-concept chains, and prioritised remediation guidance.</li>
+          <li>Conducted full vulnerability validation and remediation retesting cycles, confirming effective closure of identified security gaps.</li>
+          <li>Applied OWASP Top 10 methodology to formulate targeted hardening recommendations adopted by client development teams.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">04 / Portfolio</div>
+      <h2 class="section-title">Key <span>Projects</span></h2>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <div class="project-header">
+          <div class="project-num">01</div>
+          <div class="project-icon">🤖</div>
+        </div>
+        <div class="project-body">
+          <div class="project-title">Automatic Log Analyser for Intrusion Detection Systems</div>
+          <div class="project-desc">Engineered a real-time automated log analysis engine for IDS log processing — surfacing anomalous network behaviour using dual-layer detection combining rule-based signatures with behavioural anomaly algorithms. Integrates with AWS CloudTrail and VPC Flow Logs.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">IDS / SIEM</span>
+            <span class="project-tag">AWS Integration</span>
+            <span class="project-tag">Threat Detection</span>
+          </div>
+        </div>
+        <div class="project-footer">
+          <div class="project-impact">Impact: <strong>~60% reduction</strong> in manual analyst workload</div>
+        </div>
+      </div>
+      <div class="project-card reveal reveal-delay-1">
+        <div class="project-header">
+          <div class="project-num">02</div>
+          <div class="project-icon">🖐️</div>
+        </div>
+        <div class="project-body">
+          <div class="project-title">Multi-Factor Authentication via Gesture & Signature Recognition</div>
+          <div class="project-desc">Designed a biometric MFA system integrating computer-vision hand gesture recognition with dynamic signature verification. Validated against enterprise false-acceptance-rate (FAR) benchmarks, suitable for cloud-hosted or on-premises deployment.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">OpenCV</span>
+            <span class="project-tag">Scikit-learn</span>
+            <span class="project-tag">Flask</span>
+            <span class="project-tag">Biometrics</span>
+          </div>
+        </div>
+        <div class="project-footer">
+          <div class="project-impact">Impact: <strong>Enterprise-grade FAR</strong> benchmarks achieved</div>
+        </div>
+      </div>
+      <div class="project-card reveal reveal-delay-2">
+        <div class="project-header">
+          <div class="project-num">03</div>
+          <div class="project-icon">🐾</div>
+        </div>
+        <div class="project-body">
+          <div class="project-title">Secure Animal Welfare Pet Adoption Platform</div>
+          <div class="project-desc">Built a full-stack platform with RBAC, secure authentication, PCI-DSS-aligned Razorpay payment integration, and OWASP Top 10 hardening throughout the development lifecycle. Automated email notifications and structured approval workflows.</div>
+          <div class="project-tags">
+            <span class="project-tag">RBAC</span>
+            <span class="project-tag">OWASP Top 10</span>
+            <span class="project-tag">PCI-DSS</span>
+            <span class="project-tag">Razorpay API</span>
+          </div>
+        </div>
+        <div class="project-footer">
+          <div class="project-impact">Impact: <strong>35% faster</strong> adoption processing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">05 / Credentials</div>
+      <h2 class="section-title">Certifications <span>&amp; Education</span></h2>
+    </div>
+    <div class="certs-grid reveal">
+      <div class="cert-card">
+        <div class="cert-icon">🏅</div>
+        <div>
+          <div class="cert-name">Cisco Cybersecurity Certification</div>
+          <div class="cert-issuer">Cisco Networking Academy</div>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🇮🇳</div>
+        <div>
+          <div class="cert-name">ISEA Cyber Hygiene Practitioner</div>
+          <div class="cert-issuer">Govt. of India — National Initiative</div>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🛡️</div>
+        <div>
+          <div class="cert-name">Network Defence Essentials (NDE)</div>
+          <div class="cert-issuer">EC-Council</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:36px;border:1px solid var(--border);background:var(--panel);padding:32px 40px;display:flex;gap:32px;align-items:center;flex-wrap:wrap;" class="reveal">
+      <div style="font-size:2.8rem;">🎓</div>
+      <div>
+        <div style="font-family:'Orbitron',monospace;font-size:1rem;color:#fff;margin-bottom:6px;">B.Tech Computer Science — Cybersecurity Specialisation</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px;">GARDEN CITY UNIVERSITY, BANGALORE</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--dim);">Expected June 2026 &nbsp;·&nbsp; <span style="color:var(--green);font-weight:bold;">CGPA: 8.8 / 10.0</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">06 / Publications</div>
+      <h2 class="section-title">Research <span>&amp; Achievements</span></h2>
+    </div>
+    <div class="research-card reveal">
+      <div class="research-meta">// Peer-Reviewed Research Publication</div>
+      <div class="research-title"><span>"</span>Privacy Challenges in Big Data Analytics:<br>Legal and Ethical Solutions<span>"</span></div>
+      <div class="research-desc">Published peer-reviewed research exploring the intersection of data privacy regulation, big data analytics infrastructure, and ethical governance frameworks. The paper proposes scalable legal and technical solutions for organisations navigating privacy compliance at scale.<br><br><strong style="color:var(--cyan);">Impact:</strong> Cited in multiple academic publications and presented at a national-level cybersecurity conference — demonstrating thought leadership in data privacy, regulatory compliance, and ethical AI governance.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">07 / Connect</div>
+      <h2 class="section-title">Get In <span>Touch</span></h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <h3>Let's Build Secure Systems Together</h3>
+        <p>Open to cloud security roles, GRC positions, penetration testing engagements, and research collaborations. Based in Bangalore — available for remote or on-site opportunities.</p>
+        <div class="contact-links">
+          <a href="mailto:rajathveeraiah20@gmail.com" class="contact-link">
+            <div class="contact-link-icon">✉</div>
+            rajathveeraiah20@gmail.com
+          </a>
+          <a href="tel:+916360463586" class="contact-link">
+            <div class="contact-link-icon">📞</div>
+            +91 6360463586
+          </a>
+          <a href="https://linkedin.com/in/rajath-h-v-45908428b" target="_blank" class="contact-link">
+            <div class="contact-link-icon">in</div>
+            linkedin.com/in/rajath-h-v-45908428b
+          </a>
+          <a href="https://github.com/rajath0407" target="_blank" class="contact-link">
+            <div class="contact-link-icon">⌥</div>
+            github.com/rajath0407
+          </a>
+          <a href="https://rajath0407.github.io/portpoli.github.io/" target="_blank" class="contact-link">
+            <div class="contact-link-icon">🌐</div>
+            Portfolio Website
+          </a>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="terminal-dot" style="background:#ff5f56"></div>
+            <div class="terminal-dot" style="background:#ffbd2e"></div>
+            <div class="terminal-dot" style="background:#27c93f"></div>
+            <span style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--dim);margin-left:8px;">secure_msg.sh</span>
+          </div>
+          <div class="terminal-body">
+            <div class="t-line"><span>$</span> ./send_message.sh <em>--encrypted</em></div>
+            <div class="t-input-row">
+              <span class="t-prompt">name:</span>
+              <input class="t-input" id="msg-name" type="text" placeholder="Your name..."/>
+            </div>
+            <div class="t-input-row">
+              <span class="t-prompt">email:</span>
+              <input class="t-input" id="msg-email" type="email" placeholder="your@email.com"/>
+            </div>
+            <div class="t-input-row" style="align-items:flex-start;margin-top:4px">
+              <span class="t-prompt" style="padding-top:4px">msg:</span>
+              <textarea class="t-textarea" id="msg-body" placeholder="Type your message..."></textarea>
+            </div>
+            <div class="t-consent-row">
+              <label class="t-consent-label">
+                <input type="checkbox" id="pii-consent" class="t-checkbox"/>
+                <span class="t-checkbox-custom"></span>
+                <span class="t-consent-text">
+                  I consent to <span style="color:var(--cyan)">Rajath H V</span> collecting and storing my name, email, and message for the purpose of responding to my enquiry. Your data will not be shared with third parties.
+                  <a href="javascript:void(0)" onclick="togglePrivacy()" style="color:var(--green);text-decoration:underline;cursor:none;">Privacy Policy ↓</a>
+                </span>
+              </label>
+            </div>
+            <div class="t-privacy-note" id="privacy-note">
+              <span style="color:var(--green)">$</span> <span style="color:var(--dim)"># PII Data Notice</span><br>
+              Data collected: Name · Email · Message content<br>
+              Purpose: Response to your enquiry only<br>
+              Retention: Deleted upon request<br>
+              Rights: Access · Rectify · Erase (GDPR / IT Act 2000 compliant)<br>
+              Contact: <span style="color:var(--cyan)">rajathveeraiah20@gmail.com</span>
+            </div>
+            <button class="t-submit" id="transmit-btn" onclick="sendMsg()" disabled style="opacity:0.4;cursor:not-allowed;">./transmit</button>
+            <div class="t-confirm" id="t-confirm">
+              [✔] Message encrypted &amp; transmitted successfully.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2025 <span>Rajath H V</span> · All systems operational.</div>
+  <div class="footer-links">
+    <a href="https://linkedin.com/in/rajath-h-v-45908428b" target="_blank">LinkedIn</a>
+    <a href="https://github.com/rajath0407" target="_blank">GitHub</a>
+    <a href="mailto:rajathveeraiah20@gmail.com">Email</a>
+  </div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+const trail = document.getElementById('cursor-trail');
+let tx = 0, ty = 0;
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    trail.style.left = e.clientX + 'px';
+    trail.style.top = e.clientY + 'px';
+  }, 60);
+});
+
+// ── MATRIX RAIN ──
+const canvas = document.getElementById('matrix-canvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*(){}[]<>?/|\\~`';
+const fontSize = 13;
+let cols = Math.floor(canvas.width / fontSize);
+let drops = Array(cols).fill(1);
+
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(2,8,16,0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#00ff41';
+  ctx.font = fontSize + 'px Share Tech Mono';
+  for (let i = 0; i < drops.length; i++) {
+    const char = chars[Math.floor(Math.random() * chars.length)];
+    ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(drawMatrix, 50);
+
+// ── COUNTER ANIMATION ──
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  let current = 0;
+  const step = target / 60;
+  const interval = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = Math.floor(current) + (target >= 20 ? '+' : '');
+    if (current >= target) clearInterval(interval);
+  }, 24);
+}
+
+// ── SKILL BARS ──
+function animateBars(container) {
+  container.querySelectorAll('.skill-bar').forEach(bar => {
+    bar.style.width = bar.dataset.width + '%';
   });
 }
 
-// Certificate verification button handlers
-document.getElementById('verify-isc2').addEventListener('click', function() {
-  createCertificateModal({
-    title: '(ISC)² Certified',
-    id: 'ISC2-CC-123456789',
-    issueDate: 'January 15, 2024',
-    expiryDate: 'January 15, 2027',
-    verifyUrl: 'https://www.isc2.org/Certifications/Verify-a-Certification'
-  });
-});
+// ── INTERSECTION OBSERVER ──
+const revealEls = document.querySelectorAll('.reveal');
+const counterEls = document.querySelectorAll('.stat-num');
+const skillSections = document.querySelectorAll('.skill-card');
+let countersStarted = false;
 
-document.getElementById('verify-eccouncil').addEventListener('click', function() {
-  createCertificateModal({
-    title: 'EC-Council Network Defense',
-    id: 'ECC-NDF-987654321',
-    issueDate: 'November 10, 2023',
-    expiryDate: 'November 10, 2026',
-    verifyUrl: 'https://aspen.eccouncil.org/VerifyBadge'
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
   });
-});
+}, { threshold: 0.12 });
+
+revealEls.forEach(el => observer.observe(el));
+
+const heroObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !countersStarted) {
+      countersStarted = true;
+      counterEls.forEach(el => animateCounter(el));
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelector('.hero-stats') && heroObserver.observe(document.querySelector('.hero-stats'));
+
+const skillObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      setTimeout(() => animateBars(entry.target), 300);
+      skillObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+skillSections.forEach(s => skillObserver.observe(s));
+
+// ── PII CONSENT TOGGLE ──
+const piiBox = document.getElementById('pii-consent');
+const transmitBtn = document.getElementById('transmit-btn');
+if (piiBox) {
+  piiBox.addEventListener('change', () => {
+    transmitBtn.disabled = !piiBox.checked;
+    transmitBtn.style.opacity = piiBox.checked ? '1' : '0.4';
+    transmitBtn.style.cursor = piiBox.checked ? 'none' : 'not-allowed';
+  });
+}
+function togglePrivacy() {
+  const note = document.getElementById('privacy-note');
+  note.classList.toggle('open');
+}
+
+// ── CONTACT FORM ──
+function sendMsg() {
+  const name = document.getElementById('msg-name').value;
+  const email = document.getElementById('msg-email').value;
+  const body = document.getElementById('msg-body').value;
+  if (!name || !email || !body) return;
+  const confirm = document.getElementById('t-confirm');
+  confirm.style.display = 'block';
+  document.getElementById('msg-name').value = '';
+  document.getElementById('msg-email').value = '';
+  document.getElementById('msg-body').value = '';
+  piiBox.checked = false;
+  transmitBtn.disabled = true;
+  transmitBtn.style.opacity = '0.4';
+  setTimeout(() => confirm.style.display = 'none', 4000);
+}
+
+// ── ACTIVE NAV LINKS ──
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const navObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(a => {
+        a.style.color = '';
+        if (a.getAttribute('href') === '#' + entry.target.id) {
+          a.style.color = 'var(--cyan)';
+        }
+      });
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(s => navObserver.observe(s));
 </script>
 </body>
 </html>
